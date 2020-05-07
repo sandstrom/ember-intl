@@ -4,6 +4,7 @@
  */
 
 import Ember from 'ember';
+import { isHTMLSafe } from '@ember/template';
 import memoize from 'fast-memoize';
 import { htmlSafe } from '@ember/string';
 import IntlMessageFormat from 'intl-messageformat';
@@ -25,9 +26,10 @@ function escape(object) {
 
   return keys(object).reduce(
     (accum, key) => {
-      // NOTE due to the typeof check this won't escape if
-      // the value is an Ember `SafeString`
-      if (typeof object[key] === 'string') {
+      if (isHTMLSafe(object[key]) {
+        // should not escape, already marked as safe
+        accum[key] = object[key];
+      } else if (typeof object[key] === 'string') {
         accum[key] = escapeExpression(object[key]);
       }
 
